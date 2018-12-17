@@ -3,7 +3,7 @@
 #' This function calculates dispersion entropy of a univariate signal
 #' x, using different mapping approaches (MA)
 #'
-#' @param x an univariate signal (vector)
+#' @param x a univariate signal (vector)
 #' @param ma the mapping approach, possible values are:
 #' \itemize{
 #'    \item \code{LM}: linear mapping

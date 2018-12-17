@@ -8,7 +8,7 @@ DispersionEntropy(x, ma = "NCDF", m = 3, nc = 6, tau = 1, mu,
   sigma)
 }
 \arguments{
-\item{x}{an univariate signal (vector)}
+\item{x}{a univariate signal (vector)}
 
 \item{ma}{the mapping approach, possible values are:
 \itemize{

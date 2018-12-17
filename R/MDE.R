@@ -1,6 +1,28 @@
 ## #'    \item Azami H, Rostaghi M, Abasolo D, Escudero J (2017) "Refined Composite Multiscale Dispersion Entropy and its Application to Biomedical Signals". IEEE transactions on bio-medical engineering 64:2872–2879.
 
 
+#' Refined Composite Multiscale Dispersion Entropy
+#'
+#' This function calculates the refined composite multiscale dispersion entropy (RCMDE) of a univariate signal x
+#'
+#' @param x a univariate signal (vector)
+#' @param m the embedding dimension
+#' @param nc the number of classes (it is usually equal to a number between 3 and 9, we use 6 by default)
+#' @param tau the time lag (it is usually equal to 1)
+#' @param nscale the number of scale factors
+#'
+#' @return a vector of size 1 * Scale - the RCMDE of x
+#' @export
+#'
+#' @references
+#' \enumerate{
+#'    \item  Azami H, Rostaghi M, Abasolo D, Escudero J (2017) "Refined Composite Multiscale Dispersion Entropy and its Application to Biomedical Signals". IEEE transactions on bio-medical engineering 64:2872–2879.
+#'    \item Rostaghi M, Letters HAISP, (2016) "Dispersion entropy: A measure for time-series analysis". IEEE Signal Processing Letters. vol. 23, n. 5, pp. 610-614, 2016.
+#' }
+#'
+#' @examples
+#' data(EG_181117)
+#' RCMDE(EG_181117)
 RCMDE <- function(x,m,nc=6,tau=1,nscale=5) {
 
   # init.
@@ -37,18 +59,28 @@ RCMDE <- function(x,m,nc=6,tau=1,nscale=5) {
 }
 
 
-#' Title
+#' MultiScale Dispersion Entropy
 #'
-#' @param x
-#' @param m
-#' @param nc
-#' @param tau
-#' @param nscale
+#' This function calculates the multiscale dispersion entropy (MDE) of a univariate signal x
 #'
-#' @return
+#' @param x a univariate signal (vector)
+#' @param m the embedding dimension
+#' @param nc the number of classes (it is usually equal to a number between 3 and 9, we use 6 by default)
+#' @param tau the time lag (it is usually equal to 1)
+#' @param nscale the number of scale factors
+#'
+#' @return a vector of size 1 * Scale - the MDE of x
 #' @export
 #'
+#' @references
+#' \enumerate{
+#'    \item  Azami H, Rostaghi M, Abasolo D, Escudero J (2017) "Refined Composite Multiscale Dispersion Entropy and its Application to Biomedical Signals". IEEE transactions on bio-medical engineering 64:2872–2879.
+#'    \item Rostaghi M, Letters HAISP, (2016) "Dispersion entropy: A measure for time-series analysis". IEEE Signal Processing Letters. vol. 23, n. 5, pp. 610-614, 2016.
+#' }
+#'
 #' @examples
+#' data(EG_181171)
+#' MDE(EG_181117)
 MDE <- function(x,m,nc=6,tau=1,nscale=5) {
 
   # init.
