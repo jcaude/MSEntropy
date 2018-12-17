@@ -1,3 +1,6 @@
+## #'    \item Azami H, Rostaghi M, Abasolo D, Escudero J (2017) "Refined Composite Multiscale Dispersion Entropy and its Application to Biomedical Signals". IEEE transactions on bio-medical engineering 64:2872–2879.
+
+
 RCMDE <- function(x,m,nc=6,tau=1,nscale=5) {
 
   # init.
@@ -9,7 +12,7 @@ RCMDE <- function(x,m,nc=6,tau=1,nscale=5) {
 
   # scale 1
   disen <- DispersionEntropy(x = x, ma = "NCDF", m = m, nc = nc, tau = tau)
-  mde[1] <- disen$Out_DisEn
+  mde[1] <- disen$disp.en
 
   # other scales
   if(nscale > 2) {
@@ -55,7 +58,7 @@ MDE <- function(x,m,nc=6,tau=1,nscale=5) {
 
   # scale 1
   disen <- DispersionEntropy(x = x, ma = "NCDF", m = m, nc = nc, tau = tau)
-  mde[1] <- disen$Out_DisEn
+  mde[1] <- disen$disp.en
 
   # scale 2...
   if(nscale > 2) {
@@ -63,7 +66,7 @@ MDE <- function(x,m,nc=6,tau=1,nscale=5) {
       xs <- ScaleX(x = x, scale = s)
       disen <- DispersionEntropy(x = xs, ma = "NCDF", m = m, nc = nc, tau = tau,
                                  mu = mu, sigma = sigma)
-      mde[s] <- disen$Out_DisEn
+      mde[s] <- disen$disp.en
     }
   }
 

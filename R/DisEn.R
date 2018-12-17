@@ -1,21 +1,39 @@
-## This file is an R port of the matlab source code from Azami H. & al. 2017,2018
-
-
+#' Dispersion Entropy
+#'
 #' This function calculates dispersion entropy of a univariate signal
 #' x, using different mapping approaches (MA)
 #'
-#' @param x
-#' @param ma
-#' @param m
-#' @param nc
-#' @param tau
-#' @param mu
-#' @param sigma
+#' @param x an univariate signal (vector)
+#' @param ma the mapping approach, possible values are:
+#' \itemize{
+#'    \item \code{LM}: linear mapping
+#'    \item \code{NCDF}: normal cumulative distribution function (default)
+#'    \item \code{LOGSIG}: logarithm sigmoid
+#'    \item \code{TANSIG}: tangent sigmoid
+#'    \item \code{SORT}: sorting method
+#' }
+#' @param m the embedding dimension
+#' @param nc the number of classes (it is usually equal to a number between 3 and 9, we use 6 by default)
+#' @param tau the time lag (it is usually equal to 1)
+#' @param mu an optional defined mean (the observed mean by default)
+#' @param sigma an option defined std-deviation (the observed std-deviation by default)
 #'
-#' @return
+#' @return a named list:
+#' \itemize{
+#'    \item \code{disp.en}: the Dispersion Entropy value of the signal x
+#'    \item \code{pdf}: a vector of length nc^m, showing the normalized number of disersion patterns of x
+#' }
 #' @export
 #'
+#' @references
+#' \enumerate{
+#'    \item Azami H, Entropy JE, (2018) "Amplitude-and Fluctuation-Based Dispersion Entropy". Entropy 20:210.
+#'    \item Rostaghi M, Letters HAISP, (2016) "Dispersion entropy: A measure for time-series analysis". IEEE Signal Processing Letters. vol. 23, n. 5, pp. 610-614, 2016.
+#' }
+#'
 #' @examples
+#' data(EG_181117)
+#' DispersionEntropy(EG_181117,m=1)
 DispersionEntropy <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
 
   # local
@@ -101,5 +119,5 @@ DispersionEntropy <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
   Out_DisEn <- -sum(p * log(p))
 
   # eop
-  return(list(Out_DisEn=Out_DisEn, pdf=npdf))
+  return(list(disp.en=Out_DisEn, pdf=npdf))
 }
