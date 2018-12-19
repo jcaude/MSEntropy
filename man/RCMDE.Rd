@@ -4,21 +4,21 @@
 \alias{RCMDE}
 \title{Refined Composite Multiscale Dispersion Entropy}
 \usage{
-RCMDE(x, m, nc = 6, tau = 1, nscale = 5)
+RCMDE(x, m = 1, nc = 6, tau = 1, scales = 1:10)
 }
 \arguments{
 \item{x}{a univariate signal (vector)}
 
-\item{m}{the embedding dimension}
+\item{m}{the embedding dimension (default: 1)}
 
 \item{nc}{the number of classes (it is usually equal to a number between 3 and 9, we use 6 by default)}
 
 \item{tau}{the time lag (it is usually equal to 1)}
 
-\item{nscale}{the number of scale factors}
+\item{scales}{the scale factors as a vector (default 1:10)}
 }
 \value{
-a vector of size 1 * Scale - the RCMDE of x
+a vector of size 1 * length(scales) - the RCMDE of x
 }
 \description{
 This function calculates the refined composite multiscale dispersion entropy (RCMDE) of a univariate signal x

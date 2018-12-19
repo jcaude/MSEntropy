@@ -3,12 +3,13 @@
 \docType{data}
 \name{EG_181117}
 \alias{EG_181117}
-\title{EEG Dataset 1}
+\title{EG_181117}
 \format{An object of class \code{numeric} of length 1662.}
 \usage{
 data(EG_181117)
 }
 \description{
-To be completed
+R-R measurements of a 41 Male with no particular pathology in rest position.
+Measurements were obtained using a Polar RS800 running computer.
 }
 \keyword{datasets}

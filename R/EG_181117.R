@@ -1,6 +1,7 @@
-#' EEG Dataset 1
+#' EG_181117
 #'
-#' To be completed
+#' R-R measurements of a 41 Male with no particular pathology in rest position.
+#' Measurements were obtained using a Polar RS800 running computer.
 #'
 #' @docType data
 #'
