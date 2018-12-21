@@ -1,6 +1,11 @@
 ## #'    \item Azami H, Rostaghi M, Abasolo D, Escudero J (2017) "Refined Composite Multiscale Dispersion Entropy and its Application to Biomedical Signals". IEEE transactions on bio-medical engineering 64:2872–2879.
 
+## Requirements
 require(parallelMap)
+
+#' @useDynLib MSEntropy, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
+NULL
 
 #' Refined Composite Multiscale Dispersion Entropy
 #'
@@ -40,7 +45,7 @@ RCMDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
     else {
       pdf <- parallelLapply(1:s, function(ss) {
         xs <- x[ss:nx]
-        xs <- ScaleX(x = xs, scale = s)
+        xs <- CoarseGraining(x = xs, scale = s)
         disen <- DispersionEntropy(x = xs, ma = "NCDF", m = m, nc = nc,
                                    tau = tau, mu = mu, sigma = sigma)
         return(disen$pdf)
@@ -90,7 +95,7 @@ MDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
 
   # calc.
   mde <- parallelSapply(scales, function(s) {
-    xs <- ScaleX(x = x, scale = s)
+    xs <- CoarseGraining(x = x, scale = s)
     disen <- DispersionEntropy(x = xs, ma = "NCDF", m = m, nc = nc, tau = tau,
                                mu = mu, sigma = sigma)
     return(disen$disp.en)
@@ -100,7 +105,6 @@ MDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
   # eop
   return(mde)
 }
-
 
 ScaleX <- function(x,scale) {
 

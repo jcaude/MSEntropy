@@ -76,8 +76,8 @@ DispersionEntropy <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
           },
 
           SORT = {
-            x <- x[1:(nc*floor(N/nc))]
-            N <- length(x)
+            N <- (nc*floor(N/nc))
+            x <- x[1:N]
             osx <- order(x)
             cx <- rep(1:nc,each=N/nc)
             z <- sapply(1:N,function(i) {cx[osx == i]})
@@ -94,6 +94,84 @@ DispersionEntropy <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
     y[y == 0] <- 1e-10
     z <- round(y*nc+0.5);
   }
+
+  #
+  all_patterns <- matrix(0,nrow = nc^m, ncol = m)
+  for(idx in 1:m)
+    all_patterns[,idx] <- rep.int(rep(1:nc,each=nc^(idx-1)),times = nc^(m-idx))
+
+  #
+  key_coef <- 10^(m:1-1)
+  key <- apply(all_patterns,1,function(v){sum(v*key_coef)})
+
+  #
+  embd2 <- vector(mode = "numeric", length = N-(m-1)*tau)
+  for(idx in 1:m) {
+    embd2 <- z[(1+(idx-1)*tau):(N-(m-idx)*tau)]*10^(m-idx) + embd2
+  }
+
+  #
+  pdf <- sapply(1:nc^m, function(idx) {sum(embd2 == key[idx])})
+
+  #
+  npdf <- pdf/(N-(m-1)*tau)
+  p <- npdf[npdf > 0]
+  Out_DisEn <- -sum(p * log(p))
+
+  # eop
+  return(list(disp.en=Out_DisEn, pdf=npdf))
+}
+
+
+#' TEST DisEn2
+#'
+#' @param x
+#' @param ma
+#' @param m
+#' @param nc
+#' @param tau
+#' @param mu
+#' @param sigma
+#'
+#' @return
+#' @export
+#'
+#' @examples
+DispersionEntropy2 <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
+
+  # init.
+  N <- length(x)
+  sigma_x <- ifelse(missing(sigma),NA,sigma)
+  mu_x <- ifelse(missing(mu),NA,mu)
+
+  #
+  switch (ma,
+
+          LM = {
+            z <- step1(x,1,nc,mu_x,sigma_x)
+          },
+
+          NCDF = {
+            z <- step1(x,2,nc,mu_x,sigma_x)
+          },
+
+          LOGSIG = {
+            z <- step1(x,3,nc,mu_x,sigma_x)
+          },
+
+          TANSIG = {
+            z <- step1(x,4,nc,mu_x,sigma_x)
+          },
+
+          SORT = {
+            z <- step1(x,5,nc,mu_x,sigma_x)
+            N <- length(z)
+          },
+
+          {
+            stop("Invalid Mapping Approach (MA)")
+          }
+  )
 
   #
   all_patterns <- matrix(0,nrow = nc^m, ncol = m)
