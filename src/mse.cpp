@@ -189,7 +189,60 @@ NumericVector step1(NumericVector x, int ma, int nc, double mu, double sigma) {
   return z;
 }
 
+// [[Rcpp::export]]
+NumericVector step2(NumericVector z, int nc, int m, int tau) {
 
+  // locals
+  int nm = pow(nc,m);
+  vector<int> patterns(nm*m);
+  NumericVector keys(nm);
+  int N = z.size();
+
+  // forge patterns array
+  int p;
+  int v=0;
+  int k;
+  int c1=0;
+  int c2=0;
+  for(int j=0; j<m; j++) {
+    k = pow(nc,j);
+    for(int i=0; i<nm; i++) {
+      //p = j*nm + i;
+      p = i*m + j;
+      v = c1;
+      patterns[p] = v + 1;
+      if(++c2 >= k) {
+        if(++c1 == nc) c1 = 0;
+        c2 = 0;
+      }
+    }
+  }
+
+  // forge keys vector
+  vector<int> keys_coef(m);
+  for(int i=m; i>0; i--) keys_coef[m-i] = pow(10,i-1);
+  for(int i=0; i<nm; i++) {
+    p = i*m;
+    c1 = 0;
+    for(int j=0; j<m; j++) {
+      c1 = c1 + patterns[p+j] * keys_coef[j];
+    }
+    keys[i] = c1;
+  }
+
+  // embd2
+  vector<int> embd2(N - (m-1)*tau);
+  for(int j=1;j<=m;j++) {
+    c1 = pow(10,m-j);
+    for(int i=(j-1)*tau; i<(N -(m-j)*tau); i++) {
+      embd2[i-(j-1)*tau] += z[i]*c1;
+    }
+  }
+
+  // pdf
+
+  return keys;
+}
 
 // You can include R code blocks in C++ files processed with sourceCpp
 // (useful for testing and development). The R code will be automatically
