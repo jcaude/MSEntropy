@@ -17,9 +17,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// step1
-NumericVector step1(NumericVector x, int ma, int nc, double mu, double sigma);
-RcppExport SEXP _MSEntropy_step1(SEXP xSEXP, SEXP maSEXP, SEXP ncSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+// disen_map
+NumericVector disen_map(NumericVector x, int ma, int nc, double mu, double sigma);
+RcppExport SEXP _MSEntropy_disen_map(SEXP xSEXP, SEXP maSEXP, SEXP ncSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -28,14 +28,29 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nc(ncSEXP);
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
     Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(step1(x, ma, nc, mu, sigma));
+    rcpp_result_gen = Rcpp::wrap(disen_map(x, ma, nc, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// disen_npdf
+NumericVector disen_npdf(NumericVector z, int nc, int m, int tau);
+RcppExport SEXP _MSEntropy_disen_npdf(SEXP zSEXP, SEXP ncSEXP, SEXP mSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< int >::type nc(ncSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(disen_npdf(z, nc, m, tau));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_MSEntropy_CoarseGraining", (DL_FUNC) &_MSEntropy_CoarseGraining, 2},
-    {"_MSEntropy_step1", (DL_FUNC) &_MSEntropy_step1, 5},
+    {"_MSEntropy_disen_map", (DL_FUNC) &_MSEntropy_disen_map, 5},
+    {"_MSEntropy_disen_npdf", (DL_FUNC) &_MSEntropy_disen_npdf, 4},
     {NULL, NULL, 0}
 };
 

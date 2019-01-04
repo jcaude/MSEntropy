@@ -2,10 +2,8 @@
 
 export(CoarseGraining)
 export(DispersionEntropy)
-export(DispersionEntropy2)
 export(MDE)
 export(RCMDE)
 export(randomSignal)
-export(step1)
 importFrom(Rcpp,sourceCpp)
 useDynLib(MSEntropy, .registration = TRUE)

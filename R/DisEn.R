@@ -36,109 +36,6 @@
 #' DispersionEntropy(EG_181117,m=1)
 DispersionEntropy <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
 
-  # local
-  .mapminmax <- function(x,ymin,ymax) {
-    xmin <- min(x)
-    xmax <- max(x)
-    if(xmin == xmax)
-      y <- min(ymax,max(x,ymin))
-    else
-      y <- (ymax-ymin)*(x-xmin)/(xmax-xmin) + ymin
-    return(y)
-  }
-
-  # init.
-  N <- length(x)
-  sigma_x <- ifelse(missing(sigma),sd(x),sigma)
-  mu_x <- ifelse(missing(mu),mean(x),mu)
-
-  #
-  switch (ma,
-
-          LM = {
-            y <- .mapminmax(x,0,1)
-          },
-
-          NCDF = {
-            y <- pnorm(x,mean = mu_x, sd = sigma_x)
-          },
-
-          LOGSIG = {
-            y <- (x-mu_x)/sigma_x
-            y <- 1 / (1 + exp(-y))
-            y <- .mapminmax(y,0,1)
-          },
-
-          TANSIG = {
-            y <- (x-mu_x)/sigma_x
-            y <- 2/(1+exp(-2*y))-1
-            y <- .mapminmax(y,0,1)
-          },
-
-          SORT = {
-            N <- (nc*floor(N/nc))
-            x <- x[1:N]
-            osx <- order(x)
-            cx <- rep(1:nc,each=N/nc)
-            z <- sapply(1:N,function(i) {cx[osx == i]})
-          },
-
-          {
-           stop("Invalid Mapping Approach (MA)")
-          }
-  )
-
-  #
-  if(ma != "SORT") {
-    y[y == 1] <- 1-(1e-10)
-    y[y == 0] <- 1e-10
-    z <- round(y*nc+0.5);
-  }
-
-  #
-  all_patterns <- matrix(0,nrow = nc^m, ncol = m)
-  for(idx in 1:m)
-    all_patterns[,idx] <- rep.int(rep(1:nc,each=nc^(idx-1)),times = nc^(m-idx))
-
-  #
-  key_coef <- 10^(m:1-1)
-  key <- apply(all_patterns,1,function(v){sum(v*key_coef)})
-
-  #
-  embd2 <- vector(mode = "numeric", length = N-(m-1)*tau)
-  for(idx in 1:m) {
-    embd2 <- z[(1+(idx-1)*tau):(N-(m-idx)*tau)]*10^(m-idx) + embd2
-  }
-
-  #
-  pdf <- sapply(1:nc^m, function(idx) {sum(embd2 == key[idx])})
-
-  #
-  npdf <- pdf/(N-(m-1)*tau)
-  p <- npdf[npdf > 0]
-  Out_DisEn <- -sum(p * log(p))
-
-  # eop
-  return(list(disp.en=Out_DisEn, pdf=npdf))
-}
-
-
-#' TEST DisEn2
-#'
-#' @param x
-#' @param ma
-#' @param m
-#' @param nc
-#' @param tau
-#' @param mu
-#' @param sigma
-#'
-#' @return
-#' @export
-#'
-#' @examples
-DispersionEntropy2 <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
-
   # init.
   N <- length(x)
   sigma_x <- ifelse(missing(sigma),NA,sigma)
@@ -148,23 +45,23 @@ DispersionEntropy2 <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
   switch (ma,
 
           LM = {
-            z <- step1(x,1,nc,mu_x,sigma_x)
+            z <- disen_map(x,1,nc,mu_x,sigma_x)
           },
 
           NCDF = {
-            z <- step1(x,2,nc,mu_x,sigma_x)
+            z <- disen_map(x,2,nc,mu_x,sigma_x)
           },
 
           LOGSIG = {
-            z <- step1(x,3,nc,mu_x,sigma_x)
+            z <- disen_map(x,3,nc,mu_x,sigma_x)
           },
 
           TANSIG = {
-            z <- step1(x,4,nc,mu_x,sigma_x)
+            z <- disen_map(x,4,nc,mu_x,sigma_x)
           },
 
           SORT = {
-            z <- step1(x,5,nc,mu_x,sigma_x)
+            z <- disen_map(x,5,nc,mu_x,sigma_x)
             N <- length(z)
           },
 
@@ -173,26 +70,10 @@ DispersionEntropy2 <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
           }
   )
 
-  #
-  all_patterns <- matrix(0,nrow = nc^m, ncol = m)
-  for(idx in 1:m)
-    all_patterns[,idx] <- rep.int(rep(1:nc,each=nc^(idx-1)),times = nc^(m-idx))
+  # compute the normalize PDF using step2
+  npdf <- disen_npdf(z,nc,m,tau)
 
-  #
-  key_coef <- 10^(m:1-1)
-  key <- apply(all_patterns,1,function(v){sum(v*key_coef)})
-
-  #
-  embd2 <- vector(mode = "numeric", length = N-(m-1)*tau)
-  for(idx in 1:m) {
-    embd2 <- z[(1+(idx-1)*tau):(N-(m-idx)*tau)]*10^(m-idx) + embd2
-  }
-
-  #
-  pdf <- sapply(1:nc^m, function(idx) {sum(embd2 == key[idx])})
-
-  #
-  npdf <- pdf/(N-(m-1)*tau)
+  # calc. final results
   p <- npdf[npdf > 0]
   Out_DisEn <- -sum(p * log(p))
 

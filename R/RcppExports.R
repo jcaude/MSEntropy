@@ -11,10 +11,11 @@ CoarseGraining <- function(x, scale) {
     .Call(`_MSEntropy_CoarseGraining`, x, scale)
 }
 
-#' STEP-1
-#'
-#' @export
-step1 <- function(x, ma, nc, mu, sigma) {
-    .Call(`_MSEntropy_step1`, x, ma, nc, mu, sigma)
+disen_map <- function(x, ma, nc, mu, sigma) {
+    .Call(`_MSEntropy_disen_map`, x, ma, nc, mu, sigma)
+}
+
+disen_npdf <- function(z, nc, m, tau) {
+    .Call(`_MSEntropy_disen_npdf`, z, nc, m, tau)
 }
 
