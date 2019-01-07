@@ -19,3 +19,7 @@ disen_npdf <- function(z, nc, m, tau) {
     .Call(`_MSEntropy_disen_npdf`, z, nc, m, tau)
 }
 
+fdisen_npdf <- function(z, nc, m, tau) {
+    .Call(`_MSEntropy_fdisen_npdf`, z, nc, m, tau)
+}
+

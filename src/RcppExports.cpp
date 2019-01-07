@@ -46,11 +46,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fdisen_npdf
+NumericVector fdisen_npdf(NumericVector z, int nc, int m, int tau);
+RcppExport SEXP _MSEntropy_fdisen_npdf(SEXP zSEXP, SEXP ncSEXP, SEXP mSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< int >::type nc(ncSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(fdisen_npdf(z, nc, m, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_MSEntropy_CoarseGraining", (DL_FUNC) &_MSEntropy_CoarseGraining, 2},
     {"_MSEntropy_disen_map", (DL_FUNC) &_MSEntropy_disen_map, 5},
     {"_MSEntropy_disen_npdf", (DL_FUNC) &_MSEntropy_disen_npdf, 4},
+    {"_MSEntropy_fdisen_npdf", (DL_FUNC) &_MSEntropy_fdisen_npdf, 4},
     {NULL, NULL, 0}
 };
 

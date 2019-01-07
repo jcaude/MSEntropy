@@ -242,3 +242,39 @@ NumericVector disen_npdf(NumericVector z, int nc, int m, int tau) {
   return npdf;
 }
 
+// [[Rcpp::export]]
+NumericVector fdisen_npdf(NumericVector z, int nc, int m, int tau) {
+
+  // init. patterns
+  int pm = (m == 1 ? 1 : m-1);
+  int nm = 2*nc-1;
+  int pn = pow(nm,pm);
+  // vector<int> patterns(pn*pm);
+  NumericVector patterns(pn*pm);
+
+  // patterns
+  int p;
+  int v=0;
+  int k;
+  int c1=0;
+  int c2=0;
+  for(int j=0; j<pm; j++) {
+    k = (j == 0 ? 1 : pow(nm,j));
+    for(int i=0; i<pn; i++) {
+      //p = j*nm + i;
+      p = i*pm + j;
+      v = c1;
+      patterns[p] = v + 1;
+      if(++c2 >= k) {
+        if(++c1 == nm) c1 = 0;
+        c2 = 0;
+      }
+    }
+  }
+
+  // key
+
+
+  // eop
+  return patterns;
+}
