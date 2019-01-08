@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <Rcpp.h>
+#include "util.hpp"
 using namespace std;
 using namespace Rcpp;
 
@@ -16,98 +17,6 @@ using namespace Rcpp;
 
 #define EPSILON     1e-10
 
-
-//' Signal Scaling (coarse-grained by average)
-//'
-//' @param x the signal as a numeric vector
-//' @param scale the scaling factor
-//'
-//' @export
-// [[Rcpp::export]]
-NumericVector CoarseGraining(NumericVector x, int scale) {
-
-  // scale == 1; no scaling
-  if(scale == 1) return x;
-
-  // init.
-  int sx_size = x.size()/scale;
-  NumericVector sx(sx_size);
-
-  // avg. signal over scale windows
-  for (int i=0; i < sx_size; i++) {
-    sx[i] = 0;
-    for(int k=0; k<scale; k++) {
-      sx[i] += x[i*scale+k];
-    }
-    sx[i] /= scale;
-  }
-
-  // eop
-  return sx;
-}
-
-// For internal use only
-double StandardDeviation(NumericVector x, double mu) {
-
-  // init.
-  int xsize = x.size();
-  double sum2 = 0.0;
-
-  // loop
-  for(int i=0; i<xsize; i++) {
-    sum2 += (x[i] - mu)*(x[i] - mu);
-  }
-
-  // eop
-  return(sqrt(sum2/(xsize - 1)));
-}
-
-// For internal use only
-NumericVector normcdf(NumericVector x, double mu, double sigma) {
-
-  // init.
-  const double sqrt2=1.41421356237309504880;
-  int xsize = x.size();
-  NumericVector y(xsize);
-
-  // loop over x..
-  for(int i=0; i<xsize; i++)
-    y[i] = erfc((mu-x[i])/(sigma*sqrt2))/2;
-
-  // eop
-  return y;
-}
-
-// For Internal use only
-NumericVector MapMinMax(NumericVector x, double ymin, double ymax) {
-
-  // init.
-  int xsize = x.size();
-  NumericVector y(xsize);
-  double xmin = x[0];
-  double xmax = x[0];
-
-  // loop over x to compute xmin & xmax
-  for(int i=0; i<xsize; i++) {
-    if(x[i] < xmin) xmin = x[i];
-    if(x[i] > xmax) xmax = x[i];
-  }
-
-  // loop agin to compute y ()
-  if(xmin == xmax) {
-    double yall = (xmin < ymin ? ymin : (xmax > ymax ? ymax : xmax) );
-    for(int i=0; i<xsize; i++)
-      y[i] = yall;
-  }
-  else {
-    double ycoef = (ymax-ymin)/(xmax-xmin);
-    for(int i=0; i<xsize; i++)
-      y[i] = ycoef*(x[i]-xmin) + ymin;
-  }
-
-  // eop
-  return y;
-}
 
 // [[Rcpp::export]]
 NumericVector disen_map(NumericVector x, int ma, int nc, double mu, double sigma) {

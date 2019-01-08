@@ -5,18 +5,6 @@
 
 using namespace Rcpp;
 
-// CoarseGraining
-NumericVector CoarseGraining(NumericVector x, int scale);
-RcppExport SEXP _MSEntropy_CoarseGraining(SEXP xSEXP, SEXP scaleSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< int >::type scale(scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(CoarseGraining(x, scale));
-    return rcpp_result_gen;
-END_RCPP
-}
 // disen_map
 NumericVector disen_map(NumericVector x, int ma, int nc, double mu, double sigma);
 RcppExport SEXP _MSEntropy_disen_map(SEXP xSEXP, SEXP maSEXP, SEXP ncSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
@@ -60,12 +48,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// CoarseGraining
+NumericVector CoarseGraining(NumericVector x, int scale);
+RcppExport SEXP _MSEntropy_CoarseGraining(SEXP xSEXP, SEXP scaleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type scale(scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(CoarseGraining(x, scale));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_MSEntropy_CoarseGraining", (DL_FUNC) &_MSEntropy_CoarseGraining, 2},
     {"_MSEntropy_disen_map", (DL_FUNC) &_MSEntropy_disen_map, 5},
     {"_MSEntropy_disen_npdf", (DL_FUNC) &_MSEntropy_disen_npdf, 4},
     {"_MSEntropy_fdisen_npdf", (DL_FUNC) &_MSEntropy_fdisen_npdf, 4},
+    {"_MSEntropy_CoarseGraining", (DL_FUNC) &_MSEntropy_CoarseGraining, 2},
     {NULL, NULL, 0}
 };
 
