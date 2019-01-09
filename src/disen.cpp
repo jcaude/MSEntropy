@@ -152,14 +152,14 @@ NumericVector disen_npdf(NumericVector z, int nc, int m, int tau) {
 }
 
 // [[Rcpp::export]]
-NumericVector fdisen_npdf(NumericVector z, int nc, int m, int tau) {
+NumericMatrix fdisen_npdf(NumericVector z, int nc, int m, int tau) {
 
   // init. patterns
+  int N = z.size();
   int pm = (m == 1 ? 1 : m-1);
   int nm = 2*nc-1;
   int pn = pow(nm,pm);
-  // vector<int> patterns(pn*pm);
-  NumericVector patterns(pn*pm);
+  vector<int> patterns(pn*pm);
 
   // patterns
   int p;
@@ -182,8 +182,47 @@ NumericVector fdisen_npdf(NumericVector z, int nc, int m, int tau) {
   }
 
   // key
+  NumericVector key(pn);
+  for(int i=0; i<pn;i++) {
+    key[i] = 0;
+    for(int ii=0; ii<pm; ii++) {
+      key[i] = key[i]*100 + patterns[i*pm + ii];
+    }
+  }
 
+  // hankel matrix
+  int hm = (m-1)*tau;
+  int hn = N-hm;
+  NumericVector ind_r(hn);
+  cout << "IND_R #len=" << ind_r.size() << endl;  //DEBUG
+  iota(ind_r.begin(),ind_r.end(),1);
+  NumericVector ind_c(hm+1);
+  cout << "IND_C #len=" << ind_c.size() << endl;  //DEBUG
+  iota(ind_c.begin(),ind_c.end(),hn);
+  NumericMatrix ind = hankel(ind_r,ind_c);
+  cout << "IND #row=" << ind.nrow() << " #cols=" << ind.ncol() << endl; //DEBUG
+
+  // embd2
+  int e2n = hm+1;
+  int e2m = (hn+tau-1)/tau;
+  NumericMatrix embd2(e2n,e2m);
+  cout << "EMBD2 #rows=" << embd2.nrow() << " #cols=" << embd2.ncol() << endl;  //DEBUG
+
+  c1=0;
+  for(int i=0; i<hn; i+=tau) {
+    for(int j=0; j<e2n; j++) {
+      embd2(j,c1)=z[ind(i,j)-1];
+    }
+    c1++;
+  }
+  cout << "C1=" << c1 << endl;  //DEBUG
+
+  // dembd2 --> using Armadillo diff() func.
+
+  // emb
+
+  // npdf
 
   // eop
-  return patterns;
+  return embd2;
 }
