@@ -1,13 +1,20 @@
+// [[Rcpp::depends(RcppArmadillo)]]
+
+#include <RcppArmadillo.h>
+#include <Rcpp.h>
+
 #include <cmath>
 #include <algorithm>
 #include <iostream>
-#include <Rcpp.h>
+
 #include "util.hpp"
+
 using namespace std;
 using namespace Rcpp;
 
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
+
 
 #define MAP_LINEAR  1
 #define MAP_NCDF    2
@@ -152,7 +159,7 @@ NumericVector disen_npdf(NumericVector z, int nc, int m, int tau) {
 }
 
 // [[Rcpp::export]]
-NumericMatrix fdisen_npdf(NumericVector z, int nc, int m, int tau) {
+NumericVector fdisen_npdf(NumericVector z, int nc, int m, int tau) {
 
   // init. patterns
   int N = z.size();
@@ -191,22 +198,21 @@ NumericMatrix fdisen_npdf(NumericVector z, int nc, int m, int tau) {
   }
 
   // hankel matrix
-  int hm = (m-1)*tau;
+  int hm = pm*tau;  // aka (m-1)*tau
   int hn = N-hm;
   NumericVector ind_r(hn);
-  cout << "IND_R #len=" << ind_r.size() << endl;  //DEBUG
+  // cout << "IND_R #len=" << ind_r.size() << endl;  //DEBUG
   iota(ind_r.begin(),ind_r.end(),1);
   NumericVector ind_c(hm+1);
-  cout << "IND_C #len=" << ind_c.size() << endl;  //DEBUG
+  // cout << "IND_C #len=" << ind_c.size() << endl;  //DEBUG
   iota(ind_c.begin(),ind_c.end(),hn);
   NumericMatrix ind = hankel(ind_r,ind_c);
-  cout << "IND #row=" << ind.nrow() << " #cols=" << ind.ncol() << endl; //DEBUG
+  // cout << "IND #row=" << ind.nrow() << " #cols=" << ind.ncol() << endl; //DEBUG
 
-  // embd2
+  // embd2 / dembd2
   int e2n = hm+1;
   int e2m = (hn+tau-1)/tau;
-  NumericMatrix embd2(e2n,e2m);
-  cout << "EMBD2 #rows=" << embd2.nrow() << " #cols=" << embd2.ncol() << endl;  //DEBUG
+  arma::mat embd2(e2n,e2m);
 
   c1=0;
   for(int i=0; i<hn; i+=tau) {
@@ -215,14 +221,26 @@ NumericMatrix fdisen_npdf(NumericVector z, int nc, int m, int tau) {
     }
     c1++;
   }
-  cout << "C1=" << c1 << endl;  //DEBUG
-
-  // dembd2 --> using Armadillo diff() func.
+  arma::mat dembd2 = diff(embd2).t() + nc;
 
   // emb
+  NumericVector emb(hn);
+  for(int i=pm; i>0; i--) {
+    for(int j=0; j<hn; j++)
+      emb[j] = pow(dembd2(j,i-1)*100,i-1) + emb[j];
+  }
 
   // npdf
+  NumericVector npdf(pn);
+  for(int id=0; id<pn; id++) {
+    c1 = key[id];
+    c2 = 0;
+    for(int j=0; j<emb.size(); j++) {
+      if(emb[j] == c1) c2++;
+    }
+    npdf[id] = (double)c2 /(N-(m-1)*tau);
+  }
 
   // eop
-  return embd2;
+  return npdf;
 }

@@ -105,22 +105,3 @@ MDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
   # eop
   return(mde)
 }
-
-ScaleX <- function(x,scale) {
-
-  # no-scaling
-  if(scale == 1)
-    return(x)
-
-  # scale signal
-  xc <- seq_along(x)
-  Rtrim <- max(which((xc %% scale) == 0))
-  xc <- xc[1:Rtrim]
-  x <- x[xc]
-  xs <- split(x,ceiling(seq_along(x)/scale))
-  xs <- sapply(xs,mean)
-
-  # eop
-  names(xs) <- NULL
-  return(xs)
-}
