@@ -64,7 +64,7 @@ NumericVector MapMinMax(NumericVector x, double ymin, double ymax) {
   return y;
 }
 
-// for internal use only
+// for internal use only ... no longer needed (buggy fdisen)
 NumericMatrix hankel(NumericVector x, NumericVector y) {
 
   // init.

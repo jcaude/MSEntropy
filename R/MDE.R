@@ -37,18 +37,18 @@ RCMDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
   sigma <- sd(x)
 
   # other scales
-  rcmde <- parallelSapply(scales, function(s) {
+  rcmde <- sapply(scales, function(s) {
     if(s == 1) {
-      disen <- DispersionEntropy(x = x, ma = "NCDF", m = m, nc = nc, tau = tau)
-      mde <- disen$disp.en
+      dispen <- DispEn(x = x, ma = "NCDF", m = m, nc = nc, tau = tau)
+      mde <- dispen$disp.en
     }
     else {
       pdf <- parallelLapply(1:s, function(ss) {
         xs <- x[ss:nx]
         xs <- CoarseGraining(x = xs, scale = s)
-        disen <- DispersionEntropy(x = xs, ma = "NCDF", m = m, nc = nc,
+        dispen <- DispEn(x = xs, ma = "NCDF", m = m, nc = nc,
                                    tau = tau, mu = mu, sigma = sigma)
-        return(disen$pdf)
+        return(dispen$pdf)
       })
       pdf <- unlist(pdf)
       pdf <- matrix(pdf,nrow = s,ncol = length(pdf)/s, byrow = TRUE)
@@ -94,11 +94,11 @@ MDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
   sigma <- sd(x)
 
   # calc.
-  mde <- parallelSapply(scales, function(s) {
+  mde <- sapply(scales, function(s) {
     xs <- CoarseGraining(x = x, scale = s)
-    disen <- DispersionEntropy(x = xs, ma = "NCDF", m = m, nc = nc, tau = tau,
+    dispen <- DispEn(x = xs, ma = "NCDF", m = m, nc = nc, tau = tau,
                                mu = mu, sigma = sigma)
-    return(disen$disp.en)
+    return(dispen$disp.en)
   })
   names(mde) <- scales
 

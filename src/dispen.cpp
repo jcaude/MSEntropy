@@ -26,7 +26,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-NumericVector disen_map(NumericVector x, int ma, int nc, double mu, double sigma) {
+NumericVector dispen_map(NumericVector x, int ma, int nc, double mu, double sigma) {
 
   // init.
   int xsize = x.size();
@@ -94,7 +94,7 @@ NumericVector disen_map(NumericVector x, int ma, int nc, double mu, double sigma
 }
 
 // [[Rcpp::export]]
-NumericVector disen_npdf(NumericVector z, int nc, int m, int tau) {
+NumericVector dispen_npdf(NumericVector z, int nc, int m, int tau) {
 
   // locals
   int nm = pow(nc,m);
@@ -135,7 +135,7 @@ NumericVector disen_npdf(NumericVector z, int nc, int m, int tau) {
   }
 
   // embd2
-  vector<int> embd2(N - (m-1)*tau);
+  arma::Col<int> embd2(N - (m-1)*tau,arma::fill::zeros);
   for(int j=1;j<=m;j++) {
     c1 = pow(10,m-j);
     for(int i=(j-1)*tau; i<(N -(m-j)*tau); i++) {
@@ -143,15 +143,13 @@ NumericVector disen_npdf(NumericVector z, int nc, int m, int tau) {
     }
   }
 
-  // normalized pdf
+  // npdf
   NumericVector npdf(nm);
-  for(int i=0; i<nm; i++) {
-    c1 = keys[i];
-    c2 = 0;
-    for(int j=0; j<embd2.size(); j++) {
-      if(embd2[j] == c1) c2++;
-    }
-    npdf[i] = (double)c2 /(N-(m-1)*tau);
+  arma::uvec hits;
+  for(int id=0; id<nm; id++) {
+    c1 = keys[id];
+    hits = find(embd2 == c1);
+    npdf[id] = (hits.n_elem > 0 ? (double) hits.n_elem /(N-(m-1)*tau) : 0.0);
   }
 
   // eop
@@ -159,7 +157,7 @@ NumericVector disen_npdf(NumericVector z, int nc, int m, int tau) {
 }
 
 // [[Rcpp::export]]
-NumericVector fdisen_npdf(NumericVector z, int nc, int m, int tau) {
+NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
 
   // init. patterns
   int N = z.size();
@@ -197,48 +195,52 @@ NumericVector fdisen_npdf(NumericVector z, int nc, int m, int tau) {
     }
   }
 
-  // hankel matrix
-  int hm = pm*tau;  // aka (m-1)*tau
-  int hn = N-hm;
-  NumericVector ind_r(hn);
-  // cout << "IND_R #len=" << ind_r.size() << endl;  //DEBUG
-  iota(ind_r.begin(),ind_r.end(),1);
-  NumericVector ind_c(hm+1);
-  // cout << "IND_C #len=" << ind_c.size() << endl;  //DEBUG
-  iota(ind_c.begin(),ind_c.end(),hn);
-  NumericMatrix ind = hankel(ind_r,ind_c);
-  // cout << "IND #row=" << ind.nrow() << " #cols=" << ind.ncol() << endl; //DEBUG
+  // ind matrix
+  int hn = m;
+  int hm = N-pm*tau;
+  NumericMatrix ind(hn,hm);
+  for(int i=0; i<hn; i++) {
+    c1 = i*tau+1;
+    for(int j=0; j<hm; j++)
+      ind(i,j) = c1++;
+  }
 
   // embd2 / dembd2
-  int e2n = hm+1;
-  int e2m = (hn+tau-1)/tau;
-  arma::mat embd2(e2n,e2m);
-
-  c1=0;
-  for(int i=0; i<hn; i+=tau) {
-    for(int j=0; j<e2n; j++) {
-      embd2(j,c1)=z[ind(i,j)-1];
+  arma::mat embd2(hn,hm);
+  for(int i=0; i<hn; i++) {
+    for(int j=0; j<hm; j++) {
+      embd2(i,j)=z[ind(i,j)-1];
     }
-    c1++;
   }
   arma::mat dembd2 = diff(embd2).t() + nc;
 
+  // for(int i = 0; i<dembd2.n_rows; i++) {
+  //   cout << "[" << i << "] ";
+  //   for(int j=0; j < dembd2.n_cols; j++) {
+  //     cout << dembd2(i,j) << " ";
+  //   }
+  //   cout << endl;
+  // }
+
   // emb
-  NumericVector emb(hn);
-  for(int i=pm; i>0; i--) {
-    for(int j=0; j<hn; j++)
-      emb[j] = pow(dembd2(j,i-1)*100,i-1) + emb[j];
-  }
+  arma::mat foo(dembd2.n_rows, dembd2.n_cols);
+  for(int i=pm; i>0; i--)
+    foo.col(i-1) = dembd2.col(i-1) * pow(100,i-1);
+  arma::vec emb = sum(foo,1);
+
+  // for(int i = 0; i<emb.n_rows; i++) {
+  //   cout << "[" << i << "] ";
+  //     cout << emb[i] << endl;
+  // }
+
 
   // npdf
   NumericVector npdf(pn);
+  arma::uvec hits;
   for(int id=0; id<pn; id++) {
     c1 = key[id];
-    c2 = 0;
-    for(int j=0; j<emb.size(); j++) {
-      if(emb[j] == c1) c2++;
-    }
-    npdf[id] = (double)c2 /(N-(m-1)*tau);
+    hits = find(emb == c1);
+    npdf[id] = (hits.n_elem > 0 ? (double) hits.n_elem /(N-(m-1)*tau) : 0.0);
   }
 
   // eop
