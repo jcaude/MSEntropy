@@ -11,6 +11,10 @@ CoarseGraining(x, scale)
 
 \item{scale}{the scaling factor}
 }
+\value{
+a numeric vector with the coarse-grained signal
+}
 \description{
-Signal Scaling (coarse-grained by average)
+Compute a coarse-grained copy of an input signal. The signal is average on
+non-overlapping windows of size 'scale' (the scale factor).
 }

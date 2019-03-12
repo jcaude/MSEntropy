@@ -4,7 +4,7 @@
 \alias{randomSignal}
 \title{Generate a random signal}
 \usage{
-randomSignal(n)
+randomSignal(n, model = "white", alpha = 1)
 }
 \arguments{
 \item{n}{the length of the signal to generate}

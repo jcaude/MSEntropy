@@ -214,25 +214,11 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
   }
   arma::mat dembd2 = diff(embd2).t() + nc;
 
-  // for(int i = 0; i<dembd2.n_rows; i++) {
-  //   cout << "[" << i << "] ";
-  //   for(int j=0; j < dembd2.n_cols; j++) {
-  //     cout << dembd2(i,j) << " ";
-  //   }
-  //   cout << endl;
-  // }
-
   // emb
   arma::mat foo(dembd2.n_rows, dembd2.n_cols);
   for(int i=pm; i>0; i--)
     foo.col(i-1) = dembd2.col(i-1) * pow(100,i-1);
   arma::vec emb = sum(foo,1);
-
-  // for(int i = 0; i<emb.n_rows; i++) {
-  //   cout << "[" << i << "] ";
-  //     cout << emb[i] << endl;
-  // }
-
 
   // npdf
   NumericVector npdf(pn);

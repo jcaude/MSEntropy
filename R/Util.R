@@ -1,3 +1,4 @@
+library(tuneR)
 
 #' Generate a random signal
 #'
@@ -11,17 +12,14 @@
 #' @examples
 #' x <- randomSignal(1000)
 #' \donttest{plot(x,type='l')}
-randomSignal <- function(n) {
+randomSignal <- function(n, model="white", alpha=1) {
 
-  # init.
-  moves <- round(runif(n,min = -1,max = 1))
-  x <- vector(mode = "integer",length = n)
-  x[1] <- 0;
-
-  # generate a random path
-  for(i in 2:n) {
-    x[i] <- x[i-1] + moves[i]
-  }
+  # forge the signal
+  if(model == "power")
+    x <- noise(kind = model, duration = n, alpha=alpha, stereo = FALSE)
+  else
+    x <- noise(kind = model, duration = n, stereo = FALSE)
+  x <- x@left
 
   # eop
   return(x)

@@ -13,14 +13,31 @@ fdispen_npdf <- function(z, nc, m, tau) {
     .Call(`_MSEntropy_fdispen_npdf`, z, nc, m, tau)
 }
 
-sampen <- function(data, m, r, N, sd) {
-    .Call(`_MSEntropy_sampen`, data, m, r, N, sd)
+#' Sample Entropy
+#'
+#' Calcul the sample entropy
+#'
+#' @param x the signal as a numeric vector
+#' @param m the embedding dimension
+#' @param r the tolerance factor for "similarity"
+#' @param sd the standard-deviation of the signal
+#'
+#' @return the sample entropy value
+#'
+#' @export
+SampEn <- function(x, m, r, sd) {
+    .Call(`_MSEntropy_SampEn`, x, m, r, sd)
 }
 
 #' Signal Scaling (coarse-grained by average)
 #'
+#' Compute a coarse-grained copy of an input signal. The signal is average on
+#' non-overlapping windows of size 'scale' (the scale factor).
+#'
 #' @param x the signal as a numeric vector
 #' @param scale the scaling factor
+#'
+#' @return a numeric vector with the coarse-grained signal
 #'
 #' @export
 CoarseGraining <- function(x, scale) {

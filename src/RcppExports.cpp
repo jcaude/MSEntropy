@@ -49,18 +49,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// sampen
-double sampen(NumericVector data, int m, double r, int N, double sd);
-RcppExport SEXP _MSEntropy_sampen(SEXP dataSEXP, SEXP mSEXP, SEXP rSEXP, SEXP NSEXP, SEXP sdSEXP) {
+// SampEn
+double SampEn(NumericVector x, int m, double r, double sd);
+RcppExport SEXP _MSEntropy_SampEn(SEXP xSEXP, SEXP mSEXP, SEXP rSEXP, SEXP sdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< double >::type r(rSEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< double >::type sd(sdSEXP);
-    rcpp_result_gen = Rcpp::wrap(sampen(data, m, r, N, sd));
+    rcpp_result_gen = Rcpp::wrap(SampEn(x, m, r, sd));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -81,7 +80,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_MSEntropy_dispen_map", (DL_FUNC) &_MSEntropy_dispen_map, 5},
     {"_MSEntropy_dispen_npdf", (DL_FUNC) &_MSEntropy_dispen_npdf, 4},
     {"_MSEntropy_fdispen_npdf", (DL_FUNC) &_MSEntropy_fdispen_npdf, 4},
-    {"_MSEntropy_sampen", (DL_FUNC) &_MSEntropy_sampen, 5},
+    {"_MSEntropy_SampEn", (DL_FUNC) &_MSEntropy_SampEn, 4},
     {"_MSEntropy_CoarseGraining", (DL_FUNC) &_MSEntropy_CoarseGraining, 2},
     {NULL, NULL, 0}
 };

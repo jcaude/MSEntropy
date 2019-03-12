@@ -3,8 +3,13 @@ using namespace Rcpp;
 
 //' Signal Scaling (coarse-grained by average)
 //'
+//' Compute a coarse-grained copy of an input signal. The signal is average on
+//' non-overlapping windows of size 'scale' (the scale factor).
+//'
 //' @param x the signal as a numeric vector
 //' @param scale the scaling factor
+//'
+//' @return a numeric vector with the coarse-grained signal
 //'
 //' @export
 // [[Rcpp::export]]
