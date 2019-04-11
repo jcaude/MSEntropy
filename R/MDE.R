@@ -18,7 +18,10 @@ NULL
 #' @param scales the scale factors as a vector (default 1:10)
 #'
 #' @return a vector of size 1 * length(scales) - the RCMDE of x
+#'
 #' @export
+#' @importFrom stats sd
+#' @importFrom parallelMap parallelLapply
 #'
 #' @references
 #' \enumerate{
@@ -76,7 +79,9 @@ RCMDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
 #' @param scales the scale factors as a vector (default 1:10)
 #'
 #' @return a vector of size 1 * length(scales) - the MDE of x
+#'
 #' @export
+#' @importFrom stats sd
 #'
 #' @references
 #' \enumerate{
