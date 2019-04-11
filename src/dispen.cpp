@@ -186,6 +186,8 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     }
   }
 
+  Rcerr << "$$ Hello There 1\n";
+
   // key
   NumericVector key(pn);
   for(int i=0; i<pn;i++) {
@@ -194,6 +196,8 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
       key[i] = key[i]*100 + patterns[i*pm + ii];
     }
   }
+
+  Rcerr << "$$ Hello There 2\n";
 
   // ind matrix
   int hn = m;
@@ -205,6 +209,8 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
       ind(i,j) = c1++;
   }
 
+  Rcerr << "$$ Hello There 3\n";
+
   // embd2 / dembd2
   arma::mat embd2(hn,hm);
   for(int i=0; i<hn; i++) {
@@ -214,11 +220,15 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
   }
   arma::mat dembd2 = diff(embd2).t() + nc;
 
+  Rcerr << "$$ Hello There 4\n";
+
   // emb
   arma::mat foo(dembd2.n_rows, dembd2.n_cols);
   for(int i=pm; i>0; i--)
     foo.col(i-1) = dembd2.col(i-1) * pow(100,i-1);
   arma::vec emb = sum(foo,1);
+
+  Rcerr << "$$ Hello There 5\n";
 
   // npdf
   NumericVector npdf(pn);
@@ -228,6 +238,8 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     hits = find(emb == c1);
     npdf[id] = (hits.n_elem > 0 ? (double) hits.n_elem /(N-(m-1)*tau) : 0.0);
   }
+
+  Rcerr << "$$ Hello There 6\n";
 
   // eop
   return npdf;
