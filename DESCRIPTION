@@ -6,7 +6,7 @@ Author: Jean-Christophe AUDE
 Maintainer: Jean-Christophe AUDE <jean-christophe.aude@cea.fr>
 Description: This package contains functions to calculate multiscale dispersion 
     Entropy measurments as described in  Azami H. & al. 2017 and 2018.
-License: MIT
+License: MIT + file LICENSE
 Depends: R (>= 3.5.0), tuneR, parallelMap
 Encoding: UTF-8
 LazyData: true

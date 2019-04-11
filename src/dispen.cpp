@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "util.hpp"
+#include "util.h"
 
 using namespace std;
 using namespace Rcpp;
