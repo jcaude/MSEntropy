@@ -186,7 +186,7 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     }
   }
 
-  Rcerr << "$$ Hello There 1\n";
+  // Rcerr << "$$ Hello There 1\n";
 
   // key
   NumericVector key(pn);
@@ -197,7 +197,7 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     }
   }
 
-  Rcerr << "$$ Hello There 2\n";
+  // Rcerr << "$$ Hello There 2\n";
 
   // ind matrix
   int hn = m;
@@ -209,7 +209,7 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
       ind(i,j) = c1++;
   }
 
-  Rcerr << "$$ Hello There 3\n";
+  // Rcerr << "$$ Hello There 3\n";
 
   // embd2 / dembd2
   arma::mat embd2(hn,hm);
@@ -218,17 +218,35 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
       embd2(i,j)=z[ind(i,j)-1];
     }
   }
-  arma::mat dembd2 = diff(embd2).t() + nc;
 
-  Rcerr << "$$ Hello There 4\n";
+  // @WARNING .. WE HAVE TO CHECK IF RCPP/SUGAR VERSION DIFF(x.t()) IS EQUIV.
+  //             TO MATLAB DIFF(x).t() WITH x ARRAY [1,N] .. BECAUSE SUGAR/DIFF
+  //             EXPECT TO WORK WITH VECTORS ..
+  //
+  //             ---------------------------------------------------------------
+  //             THIS **MUST** BE DONE BEFORE ANY FINAL COMMIT WITH USER CASE
+  //             VERIFICATIONS BETWEEN MATLAB AND RCPP CODE
+  //             ---------------------------------------------------------------
+  arma::mat dembd2 = diff(embd2.t()) + nc;
+
+  // Rcerr << "$$-- embd2 #rows = " << embd2.n_rows << "\n";
+  // Rcerr << "$$-- embd2 #cols = " << embd2.n_cols << "\n";
+  // Rcerr << "$$ Hello There 4\n";
 
   // emb
   arma::mat foo(dembd2.n_rows, dembd2.n_cols);
-  for(int i=pm; i>0; i--)
+  // Rcerr << "$$-- pm = " << pm << "\n";
+  // Rcerr << "$$-- dembd2 #rows = " << dembd2.n_rows << "\n";
+  // Rcerr << "$$-- dembd2 #cols = " << dembd2.n_cols << "\n";
+
+  for(int i=pm; i>0; i--) {
+    // Rcerr << "$$... i=" << i;
     foo.col(i-1) = dembd2.col(i-1) * pow(100,i-1);
+    // Rcerr << " (done)\n";
+  }
   arma::vec emb = sum(foo,1);
 
-  Rcerr << "$$ Hello There 5\n";
+  // Rcerr << "$$ Hello There 5\n";
 
   // npdf
   NumericVector npdf(pn);
@@ -239,7 +257,7 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     npdf[id] = (hits.n_elem > 0 ? (double) hits.n_elem /(N-(m-1)*tau) : 0.0);
   }
 
-  Rcerr << "$$ Hello There 6\n";
+  // Rcerr << "$$ Hello There 6\n";
 
   // eop
   return npdf;
