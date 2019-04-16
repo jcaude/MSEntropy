@@ -186,8 +186,6 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     }
   }
 
-  // Rcerr << "$$ Hello There 1\n";
-
   // key
   NumericVector key(pn);
   for(int i=0; i<pn;i++) {
@@ -196,8 +194,6 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
       key[i] = key[i]*100 + patterns[i*pm + ii];
     }
   }
-
-  // Rcerr << "$$ Hello There 2\n";
 
   // ind matrix
   int hn = m;
@@ -209,8 +205,6 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
       ind(i,j) = c1++;
   }
 
-  // Rcerr << "$$ Hello There 3\n";
-
   // embd2 / dembd2
   arma::mat embd2(hn,hm);
   for(int i=0; i<hn; i++) {
@@ -219,178 +213,17 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     }
   }
 
-  // @WARNING .. WE HAVE TO CHECK IF RCPP/SUGAR VERSION DIFF(x.t()) IS EQUIV.
-  //             TO MATLAB DIFF(x).t() WITH x ARRAY [1,N] .. BECAUSE SUGAR/DIFF
-  //             EXPECT TO WORK WITH VECTORS ..
-  //
-  //             ---------------------------------------------------------------
-  //             THIS **MUST** BE DONE BEFORE ANY FINAL COMMIT WITH USER CASE
-  //             VERIFICATIONS BETWEEN MATLAB AND RCPP CODE
-  //             ---------------------------------------------------------------
-  //
-  // SOUS OCTAVE ON A:
-  //
-  // >> a = [1:10 ; 12:21]
-  // a =
-  //
-  //   1    2    3    4    5    6    7    8    9   10
-  //  12   13   14   15   16   17   18   19   20   21
-  //
-  // >> diff(a)
-  //   ans =
-  //
-  //   11   11   11   11   11   11   11   11   11   11
-  //
-  // DONC ON A FAIT LA DIFF. ENTRE LES COLs CAR #ROWS > 1 ..
-  //
-  // >> diff(a)'
-  // ans =
-  //
-  // 11
-  // 11
-  // 11
-  // 11
-  // 11
-  // 11
-  // 11
-  // 11
-  // 11
-  // 11
-  //
-  // SOUS R AVEC LA TRANSP.
-  //
-  // > a <- rbind(1:10,12:21)
-  // > a
-  //   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-  // [1,]    1    2    3    4    5    6    7    8    9    10
-  // [2,]   12   13   14   15   16   17   18   19   20    21
-  // > t(diff(a))
-  // [,1]
-  // [1,]   11
-  // [2,]   11
-  // [3,]   11
-  // [4,]   11
-  // [5,]   11
-  // [6,]   11
-  // [7,]   11
-  // [8,]   11
-  // [9,]   11
-  // [10,]   11
-  //
-  // DONC ON A LA MEME CHOSE... AVEC SUGAR/DIFF ?
-  //
-  // > sugarDIFF(a)
-  //   [,1] [,2]
-  // [1,]    1    1
-  // [2,]    1    1
-  // [3,]    1    1
-  // [4,]    1    1
-  // [5,]    1    1
-  // [6,]    1    1
-  // [7,]    1    1
-  // [8,]    1    1
-  // [9,]    1    1
-  //
-  // NOPE !!!! AND WITH THE GOOD OLD CODE ?
-  //
-  // > sugarDIFF2(a)
-  // [,1]
-  // [1,]   11
-  // [2,]   11
-  // [3,]   11
-  // [4,]   11
-  // [5,]   11
-  // [6,]   11
-  // [7,]   11
-  // [8,]   11
-  // [9,]   11
-  // [10,]   11
-  //
-  // DAMNED !!! SO W/ MATRIX DIMENSIONS > 1 IT'S PERFECTLY CORRECT THE TRICK IS
-  // THAT FOR 1xN MATRIX, MATLAB/OCTAVE DIFF TRANSPOSE THE RESULT ACCORDINGLY
-  // TO THE DOCUMENTATION.. LET'S SEE
-  //
-  // >> b = [1:10]
-  // b =
-  //
-  //   1    2    3    4    5    6    7    8    9   10
-  //
-  // >> diff(b)'
-  // ans =
-  //
-  // 1
-  // 1
-  // 1
-  // 1
-  // 1
-  // 1
-  // 1
-  // 1
-  // 1
-  //
-  // >> c = [1;2;3;4;5;6;7;8;9;10]
-  // c =
-  //
-  //   1
-  // 2
-  // 3
-  // 4
-  // 5
-  // 6
-  // 7
-  // 8
-  // 9
-  // 10
-  //
-  // >> diff(c)'
-  // ans =
-  //
-  // 1   1   1   1   1   1   1   1   1
-  //
-  // AND WITH SUGAR/DIFF (OLD STYLE)
-  //
-  // > sugarDIFF2(as.matrix(b))
-  // [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-  // [1,]    1    1    1    1    1    1    1    1    1
-  //
-  // > sugarDIFF2(t(as.matrix(b)))
-  //
-  // [1,]
-  // [2,]
-  // [3,]
-  // [4,]
-  // [5,]
-  // [6,]
-  // [7,]
-  // [8,]
-  // [9,]
-  // [10,]
-  //
-  // AND THIS SHOULD FIX THE ERROR ..
   arma::mat dembd2;
   if(embd2.n_rows == 1)
     dembd2 = diff(embd2.t()) + nc;
   else
     dembd2 = diff(embd2).t() + nc;
 
-  // Rcerr << "$$-- embd2 #rows = " << embd2.n_rows << "\n";
-  // Rcerr << "$$-- embd2 #cols = " << embd2.n_cols << "\n";
-  // Rcerr << "$$ Hello There 4\n";
-
   // emb
   arma::mat foo(dembd2.n_rows, dembd2.n_cols);
-  // Rcerr << "$$-- pm = " << pm << "\n";
-  // Rcerr << "$$-- dembd2 #rows = " << dembd2.n_rows << "\n";
-  // Rcerr << "$$-- dembd2 #cols = " << dembd2.n_cols << "\n";
-
-  for(int i=pm; i>0; i--) {
-    // Rcerr << "$$... i=" << i;
+  for(int i=pm; i>0; i--)
     foo.col(i-1) = dembd2.col(i-1) * pow(100,i-1);
-    // Rcerr << " (done)\n";
-  }
   arma::vec emb = sum(foo,1);
-
-  // Rcerr << "$$ Hello There 5\n";
 
   // npdf
   NumericVector npdf(pn);
@@ -400,8 +233,6 @@ NumericVector fdispen_npdf(NumericVector z, int nc, int m, int tau) {
     hits = find(emb == c1);
     npdf[id] = (hits.n_elem > 0 ? (double) hits.n_elem /(N-(m-1)*tau) : 0.0);
   }
-
-  // Rcerr << "$$ Hello There 6\n";
 
   // eop
   return npdf;
