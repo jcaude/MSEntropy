@@ -18,17 +18,12 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of MSEntropy is to ...
+The goal of MSEntropy is to provide a set of optimzed multiscale entropy 
+calculation functions.
 
 ## Installation
 
-You can install the released version of MSEntropy from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("MSEntropy")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -36,25 +31,17 @@ devtools::install_github("jcaude/MSEntropy")
 ```
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The MSEntropy package comes with some sample datasets:
 
 ```{r example}
 library(MSEntropy)
+
 ## basic example code
+plot(EG_181117,type='l',xlab="Time (s)", ylab="EEG",main="EG_181117")
+```
+You can than compute the Multiscale Dispersion Entropy (MDE) using:
+
+```{r}
+plot(MDE(EG_181117,scales = 1:50),type='b',xlab="Scale",ylab="MDE",main="EG_181117")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!

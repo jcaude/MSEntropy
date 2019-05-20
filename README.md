@@ -9,18 +9,13 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of MSEntropy is to …
+The goal of MSEntropy is to provide a set of optimzed multiscale entropy
+calculation functions.
 
 ## Installation
 
-You can install the released version of MSEntropy from
-[CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("MSEntropy")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -29,35 +24,23 @@ devtools::install_github("jcaude/MSEntropy")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The MSEntropy package comes with some sample datasets:
 
 ``` r
 library(MSEntropy)
 #> Loading required package: tuneR
 #> Loading required package: parallelMap
+
 ## basic example code
+plot(EG_181117,type='l',xlab="Time (s)", ylab="EEG",main="EG_181117")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+<img src="man/figures/README-example-1.png" width="100%" /> You can than
+compute the Multiscale Dispersion Entropy (MDE)
+using:
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+plot(MDE(EG_181117,scales = 1:50),type='b',xlab="Scale",ylab="MDE",main="EG_181117")
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub\!
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
