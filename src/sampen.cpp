@@ -16,10 +16,15 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 double SampEn(NumericVector x, int m, double r, double sd)
 {
-
-  // init.
+  // init (1)
   int N = x.size();
   int N_max = N-(m+1)+1;
+
+  // check
+  if(N_max < 2)
+    stop("'m' value too large");
+
+  // init (2)
   int A = 0, B = 0;
   double sum = 0.0;
   double err;
