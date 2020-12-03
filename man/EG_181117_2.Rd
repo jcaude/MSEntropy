@@ -4,7 +4,9 @@
 \name{EG_181117_2}
 \alias{EG_181117_2}
 \title{EG_181117_2}
-\format{An object of class \code{numeric} of length 10640.}
+\format{
+An object of class \code{numeric} of length 10640.
+}
 \usage{
 data(EG_181117_2)
 }
