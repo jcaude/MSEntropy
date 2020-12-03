@@ -1,13 +1,12 @@
-## #'    \item Azami H, Rostaghi M, Abasolo D, Escudero J (2017) "Refined Composite Multiscale Dispersion Entropy and its Application to Biomedical Signals". IEEE transactions on bio-medical engineering 64:2872–2879.
-
 ## Requirements
 require(parallelMap)
 
 #' @useDynLib MSEntropy, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
+#' @importFrom RcppArmadillo armadillo_version
 NULL
 
-#' Refined Composite Multiscale Dispersion Entropy
+#' Refined Composite Multiscale Dispersion Entropy (RCMDE)
 #'
 #' This function calculates the refined composite multiscale dispersion entropy (RCMDE) of a univariate signal x
 #'
@@ -68,7 +67,7 @@ RCMDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
 }
 
 
-#' MultiScale Dispersion Entropy
+#' MultiScale Dispersion Entropy (MDE)
 #'
 #' This function calculates the multiscale dispersion entropy (MDE) of a univariate signal x
 #'
@@ -100,7 +99,10 @@ MDE <- function(x,m=1,nc=6,tau=1,scales=1:10) {
 
   # calc.
   mde <- sapply(scales, function(s) {
-    xs <- CoarseGraining(x = x, scale = s)
+    if(s == 1)
+      xs <- x
+    else
+      xs <- CoarseGraining(x = x, scale = s)
     dispen <- DispEn(x = xs, ma = "NCDF", m = m, nc = nc, tau = tau,
                                mu = mu, sigma = sigma)
     return(dispen$disp.en)

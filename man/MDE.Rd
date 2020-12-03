@@ -2,7 +2,7 @@
 % Please edit documentation in R/MDE.R
 \name{MDE}
 \alias{MDE}
-\title{MultiScale Dispersion Entropy}
+\title{MultiScale Dispersion Entropy (MDE)}
 \usage{
 MDE(x, m = 1, nc = 6, tau = 1, scales = 1:10)
 }

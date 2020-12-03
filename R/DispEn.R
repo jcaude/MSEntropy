@@ -105,7 +105,7 @@ DispEn <- function(x,ma="NCDF",m=3,nc=6,tau=1,mu,sigma) {
 #' @return a named list:
 #' \itemize{
 #'    \item \code{fdisp.en}: the Fluctuation-Based Dispersion Entropy value of the signal x
-#'    \item \code{pdf}: a vector of length nc^m, showing the normalized number of disersion patterns of x
+#'    \item \code{pdf}: a vector of length nc^m, showing the normalized number of dispersion patterns of x
 #' }
 #' @export
 #'

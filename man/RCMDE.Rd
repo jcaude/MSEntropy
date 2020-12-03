@@ -2,7 +2,7 @@
 % Please edit documentation in R/MDE.R
 \name{RCMDE}
 \alias{RCMDE}
-\title{Refined Composite Multiscale Dispersion Entropy}
+\title{Refined Composite Multiscale Dispersion Entropy (RCMDE)}
 \usage{
 RCMDE(x, m = 1, nc = 6, tau = 1, scales = 1:10)
 }
