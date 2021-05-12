@@ -14,7 +14,7 @@ calculation functions.
 
 ## Installation
 
-You can install the development version from
+You can install the development version directly from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -32,6 +32,7 @@ library(MSEntropy)
 #> Loading required package: parallelMap
 
 ## basic example code
+data("EG_181117")
 plot(EG_181117,type='l',xlab="Time (s)", ylab="EEG",main="EG_181117")
 ```
 

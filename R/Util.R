@@ -27,8 +27,8 @@ library(tuneR)
 randomSignal <- function(n, model="white", alpha=1) {
 
   # forge the signal
-  if(model == "power")
-    x <- noise(kind = model, duration = n, alpha=alpha, stereo = FALSE)
+  if (model == "power")
+    x <- noise(kind = model, duration = n, alpha = alpha, stereo = FALSE)
   else
     x <- noise(kind = model, duration = n, stereo = FALSE)
   x <- x@left
